@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محمد علي خلف | مطور فرونت اند</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: { 900: '#0a0a2e', 800: '#0d0d3a', 700: '#12124a', 600: '#1a1a5e' },
+                        neon: { cyan: '#00f0ff', blue: '#0080ff', purple: '#7b2fff', pink: '#ff00aa', green: '#00ff88', orange: '#ff8800', red: '#ff4444', yellow: '#ffdd00' }
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                        inter: ['Inter', 'sans-serif'],
+                        code: ['Fira Code', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        ::selection { background: #00f0ff33; color: #00f0ff; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a2e; }
+        ::-webkit-scrollbar-thumb { background: #00f0ff44; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00f0ff88; }
+        html { scroll-behavior: smooth; }
+        body {
+            background: #0a0a2e;
+            color: #e0e0ff;
+            font-family: 'Cairo', sans-serif;
+            overflow-x: hidden;
+        }
+        .glow-cyan { text-shadow: 0 0 10px #00f0ff88, 0 0 40px #00f0ff44, 0 0 80px #00f0ff22; }
+        .glow-purple { text-shadow: 0 0 10px #7b2fff88, 0 0 40px #7b2fff44; }
+        .glow-pink { text-shadow: 0 0 10px #ff00aa88, 0 0 40px #ff00aa44; }
+        .box-glow-cyan { box-shadow: 0 0 15px #00f0ff33, 0 0 40px #00f0ff11, inset 0 0 15px #00f0ff08; }
+        .box-glow-purple { box-shadow: 0 0 15px #7b2fff33, 0 0 40px #7b2fff11; }
+        .grid-bg {
+            background-image:
+                linear-gradient(rgba(0,240,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,240,255,0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+        .scan-line::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 40%, rgba(0,240,255,0.02) 50%, transparent 60%);
+            background-size: 100% 200%;
+            animation: scan 4s linear infinite;
+            pointer-events: none;
+            z-index: 9990;
+        }
+        @keyframes scan { 0% { background-position: 0% 0%; } 100% { background-position: 0% 200%; } }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-12px) rotate(0.5deg); }
+            66% { transform: translateY(6px) rotate(-0.5deg); }
+        }
+        .float { animation: float 6s ease-in-out infinite; }
+        .float-delay { animation: float 6s ease-in-out 2s infinite; }
+        .float-delay-2 { animation: float 6s ease-in-out 4s infinite; }
+        @keyframes typing { from { width: 0; } to { width: 100%; } }
+        @keyframes blink-caret { 50% { border-color: transparent; } }
+        .typewriter-wrap { overflow: hidden; direction: ltr; text-align: left; }
+        .typewriter-text {
+            display: inline-block; overflow: hidden; white-space: nowrap;
+            border-left: 3px solid #00f0ff;
+            animation: typing 3s steps(38) 0.8s forwards, blink-caret 0.8s step-end infinite;
+            width: 0;
+        }
+        @media (max-width: 480px) {
+            .typewriter-text { font-size: 11px; animation: typing 3s steps(30) 0.8s forwards, blink-caret 0.8s step-end infinite; }
+        }
+        @keyframes glitch1 {
+            0%, 100% { clip-path: inset(0 0 95% 0); transform: translate(-2px, 2px); }
+            20% { clip-path: inset(30% 0 50% 0); transform: translate(2px, -2px); }
+            40% { clip-path: inset(60% 0 10% 0); transform: translate(-1px, 1px); }
+            60% { clip-path: inset(10% 0 70% 0); transform: translate(1px, -1px); }
+            80% { clip-path: inset(80% 0 5% 0); transform: translate(-2px, 2px); }
+        }
+        @keyframes glitch2 {
+            0%, 100% { clip-path: inset(95% 0 0 0); transform: translate(2px, -2px); }
+            20% { clip-path: inset(50% 0 30% 0); transform: translate(-2px, 2px); }
+            40% { clip-path: inset(10% 0 60% 0); transform: translate(1px, -1px); }
+            60% { clip-path: inset(70% 0 10% 0); transform: translate(-1px, 1px); }
+            80% { clip-path: inset(5% 0 80% 0); transform: translate(2px, -2px); }
+        }
+        .glitch-wrapper { position: relative; display: inline-block; }
+        .glitch-wrapper::before, .glitch-wrapper::after {
+            content: attr(data-text); position: absolute; top: 0; right: 0; width: 100%; height: 100%;
+        }
+        .glitch-wrapper::before { color: #00f0ff; animation: glitch1 3s infinite linear alternate-reverse; z-index: -1; }
+        .glitch-wrapper::after { color: #ff00aa; animation: glitch2 3s infinite linear alternate-reverse; z-index: -1; }
+        @keyframes orbit {
+            from { transform: rotate(0deg) translateX(var(--orbit-r, 100px)) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(var(--orbit-r, 100px)) rotate(-360deg); }
+        }
+        .orbit-1 { --orbit-r: 100px; animation: orbit 8s linear infinite; }
+        .orbit-2 { --orbit-r: 140px; animation: orbit 12s linear infinite; }
+        .orbit-3 { --orbit-r: 70px; animation: orbit 6s linear infinite; }
+        @media (max-width: 640px) { .orbit-1 { --orbit-r: 70px; } .orbit-2 { --orbit-r: 100px; } .orbit-3 { --orbit-r: 50px; } }
+        @media (max-width: 380px) { .orbit-1 { --orbit-r: 55px; } .orbit-2 { --orbit-r: 80px; } .orbit-3 { --orbit-r: 40px; } }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid rgba(0,240,255,0.08);
+        }
+        .card-hover:hover {
+            border-color: rgba(0,240,255,0.3);
+            box-shadow: 0 0 30px rgba(0,240,255,0.1), 0 20px 60px rgba(0,0,0,0.4);
+            transform: translateY(-6px);
+        }
+        @media (max-width: 768px) { .card-hover:hover { transform: translateY(-3px); } }
+        .skill-bar-fill {
+            height: 100%; border-radius: 9999px;
+            background: linear-gradient(90deg, #00f0ff, #7b2fff);
+            box-shadow: 0 0 12px #00f0ff55;
+            transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1); width: 0;
+        }
+        .skill-bar-fill.animated { width: var(--target-width); }
+        @property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+        @keyframes borderRotate { from { --angle: 0deg; } to { --angle: 360deg; } }
+        .neon-border { position: relative; border-radius: 16px; overflow: hidden; }
+        .neon-border::before {
+            content: ''; position: absolute; inset: -2px;
+            background: conic-gradient(from var(--angle, 0deg), #00f0ff, #7b2fff, #ff00aa, #00f0ff);
+            border-radius: 18px; z-index: -1; animation: borderRotate 4s linear infinite;
+        }
+        #particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+        section { position: relative; z-index: 1; }
+        .nav-link { position: relative; }
+        .nav-link::after {
+            content: ''; position: absolute; bottom: -4px; right: 0; width: 0; height: 2px;
+            background: #00f0ff; box-shadow: 0 0 8px #00f0ff88; transition: width 0.3s ease;
+        }
+        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+        .magnetic-btn { position: relative; overflow: hidden; transition: all 0.3s ease; }
+        .magnetic-btn::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, #00f0ff22, #7b2fff22); opacity: 0; transition: opacity 0.3s;
+        }
+        .magnetic-btn:hover::before { opacity: 1; }
+        .magnetic-btn:hover { box-shadow: 0 0 30px #00f0ff44, 0 0 60px #7b2fff22; }
+        .project-img {
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            filter: grayscale(40%) brightness(0.8);
+        }
+        .card-hover:hover .project-img { filter: grayscale(0%) brightness(1); transform: scale(1.08); }
+        .toast {
+            position: fixed; bottom: 24px; left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #12124aee; border: 1px solid #00f0ff44; color: #00f0ff;
+            padding: 12px 24px; border-radius: 12px; font-family: 'Cairo'; font-size: 13px;
+            z-index: 99999; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s;
+            opacity: 0; backdrop-filter: blur(10px); box-shadow: 0 0 20px #00f0ff22;
+            white-space: nowrap; max-width: 90vw;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .mobile-menu { transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .mobile-menu.open { transform: translateX(0); }
+        .code-block {
+            background: #0d0d3aee; border: 1px solid rgba(0,240,255,0.15);
+            border-radius: 12px; backdrop-filter: blur(10px);
+            direction: ltr; text-align: left; font-family: 'Fira Code', monospace;
+        }
+        .code-keyword { color: #7b2fff; }
+        .code-string { color: #00ff88; }
+        .code-prop { color: #00f0ff; }
+        .code-comment { color: #555580; }
+        .code-bracket { color: #ff00aa; }
+        .counter-value {
+            background: linear-gradient(135deg, #00f0ff, #7b2fff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        @media (hover: none) and (pointer: coarse) { .mouse-trail-area { display: none; } }
+        @media (max-width: 768px) { .scan-line::after { display: none; } }
+        .about-badge-1 { position: absolute; bottom: -16px; left: -16px; z-index: 10; }
+        .about-badge-2 { position: absolute; top: -16px; right: -16px; z-index: 10; }
+        @media (max-width: 640px) {
+            .about-badge-1 { bottom: -10px; left: -6px; }
+            .about-badge-2 { top: -10px; right: -6px; }
+            .about-badge-1 .flex, .about-badge-2 .flex { gap: 8px; }
+            .about-badge-1 .w-12, .about-badge-2 .w-12 { width: 36px; height: 36px; min-width: 36px; }
+            .about-badge-1 .text-sm, .about-badge-2 .text-sm { font-size: 11px; }
+            .about-badge-1 .text-xs, .about-badge-2 .text-xs { font-size: 9px; }
+            .about-badge-1, .about-badge-2 { padding: 10px; border-radius: 14px; }
+        }
+        @media (max-width: 380px) {
+            .about-badge-1 { bottom: -8px; left: -4px; }
+            .about-badge-2 { top: -8px; right: -4px; }
+            .about-badge-1 .w-12, .about-badge-2 .w-12 { width: 30px; height: 30px; min-width: 30px; }
+        }
+        .tabs-container { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .tabs-container::-webkit-scrollbar { display: none; }
+        @media (max-width: 480px) {
+            .code-block { padding: 14px !important; }
+            .code-block .text-xs { font-size: 10px; }
+            .code-block .leading-7 { line-height: 1.8; }
+            .code-block .pr-4 { padding-right: 12px; }
+            .code-block .pr-8 { padding-right: 20px; }
+        }
+        .vscode-icon { display: inline-block; width: 1.2em; height: 1.2em; vertical-align: -0.15em; }
+        @media (min-width: 640px) { .vscode-icon { width: 1.3em; height: 1.3em; } }
+
+        /* ── Fixed Sidebar ── */
+        .sidebar-social {
+            position: fixed;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 30;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+        .sidebar-social .sidebar-line {
+            width: 1px;
+            height: 60px;
+            background: linear-gradient(to bottom, transparent, rgba(0,240,255,0.4), transparent);
+        }
+        .sidebar-social a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            color: #555570;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .sidebar-social a::after {
+            content: attr(data-label);
+            position: absolute;
+            left: 56px;
+            background: #12124aee;
+            border: 1px solid rgba(0,240,255,0.2);
+            color: #00f0ff;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-family: 'Cairo';
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateX(-8px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            backdrop-filter: blur(10px);
+        }
+        .sidebar-social a:hover::after { opacity: 1; transform: translateX(0); }
+        .sidebar-social a:hover {
+            color: #00f0ff;
+            text-shadow: 0 0 12px #00f0ff88;
+        }
+        .sidebar-social a:hover i { transform: scale(1.2); }
+        .sidebar-social a i { transition: transform 0.3s ease; }
+
+        @media (max-width: 768px) {
+            .sidebar-social { display: none; }
+        }
+    </style>
+</head>
+<body class="grid-bg scan-line">
+
+    <canvas id="particles"></canvas>
+
+    <!-- ══════ FIXED SIDEBAR ══════ -->
+    <div class="sidebar-social">
+        <div class="sidebar-line"></div>
+        <a href="mailto:mohammedalikhalaf4@gmail.com" target="_blank" data-label="البريد الإلكتروني">
+            <i class="fas fa-envelope"></i>
+        </a>
+        <a href="https://github.com/mohamedalikhalaf632-a11y" target="_blank" data-label="GitHub">
+            <i class="fab fa-github"></i>
+        </a>
+        <a href="https://www.linkedin.com/in/mohamed-khalaf-026581385" target="_blank" data-label="LinkedIn">
+            <i class="fab fa-linkedin-in"></i>
+        </a>
+        <div class="sidebar-line"></div>
+    </div>
+
+    <!-- ══════════ NAVIGATION ══════════ -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="flex items-center justify-between h-16 sm:h-20">
+                <a href="#hero" class="flex items-center gap-2 sm:gap-3 group shrink-0">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center text-navy-900 font-bold text-base sm:text-lg group-hover:shadow-[0_0_20px_#00f0ff66] transition-shadow duration-300">KH</div>
+                    <span class="font-bold text-base sm:text-lg text-white hidden sm:block">خلف<span class="text-neon-cyan">.</span></span>
+                </a>
+                <div class="hidden lg:flex items-center gap-6 xl:gap-8">
+                    <a href="#hero" class="nav-link text-sm font-medium text-gray-300 hover:text-neon-cyan transition-colors active">الرئيسية</a>
+                    <a href="#about" class="nav-link text-sm font-medium text-gray-300 hover:text-neon-cyan transition-colors">عني</a>
+                    <a href="#skills" class="nav-link text-sm font-medium text-gray-300 hover:text-neon-cyan transition-colors">المهارات</a>
+                    <a href="#projects" class="nav-link text-sm font-medium text-gray-300 hover:text-neon-cyan transition-colors">المشاريع</a>
+                    <a href="#contact" class="nav-link text-sm font-medium text-gray-300 hover:text-neon-cyan transition-colors">تواصل</a>
+                </div>
+                <div class="flex items-center gap-3">
+                    <a href="mailto:mohammedalikhalaf4@gmail.com" class="hidden md:flex magnetic-btn items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl border border-neon-cyan/30 text-neon-cyan text-xs sm:text-sm font-medium">
+                        <i class="fas fa-envelope text-xs"></i>
+                        تواصل معي
+                    </a>
+                    <button id="menuToggle" class="lg:hidden w-10 h-10 flex flex-col items-center justify-center gap-1.5 text-neon-cyan" aria-label="القائمة">
+                        <span class="block w-6 h-0.5 bg-current transition-all duration-300 origin-center" id="bar1"></span>
+                        <span class="block w-6 h-0.5 bg-current transition-all duration-300" id="bar2"></span>
+                        <span class="block w-4 h-0.5 bg-current transition-all duration-300 origin-center" id="bar3"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu fixed inset-0 z-40 bg-navy-900/98 backdrop-blur-xl flex flex-col items-center justify-center gap-7">
+        <a href="#hero" class="text-xl sm:text-2xl font-bold text-white hover:text-neon-cyan transition-colors" onclick="closeMobile()">الرئيسية</a>
+        <a href="#about" class="text-xl sm:text-2xl font-bold text-white hover:text-neon-cyan transition-colors" onclick="closeMobile()">عني</a>
+        <a href="#skills" class="text-xl sm:text-2xl font-bold text-white hover:text-neon-cyan transition-colors" onclick="closeMobile()">المهارات</a>
+        <a href="#projects" class="text-xl sm:text-2xl font-bold text-white hover:text-neon-cyan transition-colors" onclick="closeMobile()">المشاريع</a>
+        <a href="#contact" class="text-xl sm:text-2xl font-bold text-white hover:text-neon-cyan transition-colors" onclick="closeMobile()">تواصل</a>
+        <a href="mailto:mohammedalikhalaf4@gmail.com" class="magnetic-btn mt-4 px-8 py-3 rounded-xl border border-neon-cyan/30 text-neon-cyan font-medium text-sm">
+            <i class="fas fa-envelope ml-2"></i> تواصل معي
+        </a>
+    </div>
+
+    <!-- ══════════ HERO ══════════ -->
+    <section id="hero" class="min-h-screen flex items-center pt-16 sm:pt-20 relative overflow-hidden">
+        <div class="absolute top-1/4 left-1/4 w-64 sm:w-96 h-64 sm:h-96 bg-neon-cyan/5 rounded-full blur-[100px] sm:blur-[120px] float"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-56 sm:w-80 h-56 sm:h-80 bg-neon-purple/5 rounded-full blur-[80px] sm:blur-[100px] float-delay"></div>
+        <div class="absolute top-1/2 left-1/2 w-48 sm:w-64 h-48 sm:h-64 bg-neon-pink/3 rounded-full blur-[60px] sm:blur-[80px] float-delay-2"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 w-full py-12 sm:py-0">
+            <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                <div class="order-2 lg:order-1 text-center lg:text-right">
+                    <div class="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-neon-cyan/20 bg-neon-cyan/5 mb-6 sm:mb-8 reveal">
+                        <span class="w-2 h-2 rounded-full bg-neon-green animate-pulse"></span>
+                        <span class="text-[10px] sm:text-xs font-medium text-neon-cyan">متاح للعمل الآن</span>
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-3 sm:mb-4 reveal reveal-delay-1">
+                        محمد علي
+                        <span class="block glitch-wrapper mt-1" data-text="خلف">خلف</span>
+                    </h1>
+                    <div class="h-7 sm:h-8 mb-6 sm:mb-8 flex justify-center lg:justify-start reveal reveal-delay-2">
+                        <div class="typewriter-wrap">
+                            <span class="typewriter-text text-xs sm:text-sm font-code text-neon-cyan/80">Frontend Developer & AI Engineer</span>
+                        </div>
+                    </div>
+                    <p class="text-sm sm:text-base lg:text-lg text-gray-400 leading-relaxed mb-8 sm:mb-10 max-w-lg mx-auto lg:mx-0 lg:ml-auto reveal reveal-delay-3">
+                        أبني واجهات مستخدم تفاعلية وأنيقة، وأطور حلول ذكاء اصطناعي مبتكرة. أحوّل الأفكار إلى تجارب رقمية استثنائية.
+                    </p>
+                    <div class="flex flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start reveal reveal-delay-4">
+                        <a href="#projects" class="magnetic-btn px-6 sm:px-8 py-3 sm:py-4 rounded-xl bg-gradient-to-l from-neon-cyan to-neon-blue text-navy-900 font-bold text-xs sm:text-sm flex items-center gap-2">
+                            <span>مشاريعي</span>
+                            <i class="fas fa-arrow-left text-[10px] sm:text-xs"></i>
+                        </a>
+                        <a href="#contact" class="magnetic-btn px-6 sm:px-8 py-3 sm:py-4 rounded-xl border border-white/10 text-white font-medium text-xs sm:text-sm flex items-center gap-2 hover:border-neon-purple/40">
+                            <span>تواصل معي</span>
+                            <i class="fas fa-paper-plane text-[10px] sm:text-xs text-neon-purple"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="order-1 lg:order-2 flex justify-center reveal reveal-delay-2">
+                    <div class="relative w-full max-w-[280px] sm:max-w-md">
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <div class="orbit-1 absolute w-3 sm:w-4 h-3 sm:h-4 rounded-full bg-neon-cyan/60 blur-[1px]"></div>
+                            <div class="orbit-2 absolute w-2.5 sm:w-3 h-2.5 sm:h-3 rounded-full bg-neon-purple/60 blur-[1px]"></div>
+                            <div class="orbit-3 absolute w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-neon-pink/60 blur-[1px]"></div>
+                        </div>
+                        <div class="code-block p-4 sm:p-6 float">
+                            <div class="flex items-center gap-1.5 sm:gap-2 mb-3 sm:mb-5">
+                                <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-neon-pink/80"></div>
+                                <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-neon-green/80"></div>
+                                <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-neon-cyan/80"></div>
+                                <span class="text-[10px] sm:text-xs text-gray-500 mr-auto font-code">profile.ts</span>
+                            </div>
+                            <div class="text-[10px] sm:text-xs leading-5 sm:leading-7">
+                                <div><span class="code-keyword">const</span> <span class="code-prop">developer</span> <span class="code-bracket">=</span> <span class="code-bracket">{</span></div>
+                                <div class="pr-3 sm:pr-4"><span class="code-prop">name</span>: <span class="code-string">"محمد علي خلف"</span>,</div>
+                                <div class="pr-3 sm:pr-4"><span class="code-prop">role</span>: <span class="code-string">"Frontend Dev"</span>,</div>
+                                <div class="pr-3 sm:pr-4"><span class="code-prop">AI</span>: <span class="code-keyword">true</span>,</div>
+                                <div class="pr-3 sm:pr-4"><span class="code-prop">skills</span>: <span class="code-bracket">[</span></div>
+                                <div class="pr-6 sm:pr-8"><span class="code-string">"React"</span>, <span class="code-string">"TS"</span>,</div>
+                                <div class="pr-6 sm:pr-8"><span class="code-string">"Python"</span>, <span class="code-string">"TF"</span></div>
+                                <div class="pr-6 sm:pr-8"><span class="code-string">"ML"</span>, <span class="code-string">"OpenCV"</span></div>
+                                <div class="pr-3 sm:pr-4"><span class="code-bracket">]</span>,</div>
+                                <div class="pr-3 sm:pr-4"><span class="code-prop">passion</span>: <span class="code-string">"∞"</span></div>
+                                <div><span class="code-bracket">}</span>;</div>
+                                <div class="mt-1 sm:mt-2"><span class="code-comment">// Ready to build ✨</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════ STATS ══════════ -->
+    <section class="py-10 sm:py-16 relative border-y border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
+                <div class="text-center reveal">
+                    <div class="counter-value text-2xl sm:text-3xl md:text-4xl font-black font-inter" data-target="1">0</div>
+                    <div class="text-xs sm:text-sm text-gray-500 mt-1 sm:mt-2">سنوات خبرة</div>
+                </div>
+                <div class="text-center reveal reveal-delay-1">
+                    <div class="counter-value text-2xl sm:text-3xl md:text-4xl font-black font-inter" data-target="10">0</div>
+                    <div class="text-xs sm:text-sm text-gray-500 mt-1 sm:mt-2">مشروع منجز</div>
+                </div>
+                <div class="text-center reveal reveal-delay-2">
+                    <div class="counter-value text-2xl sm:text-3xl md:text-4xl font-black font-inter" data-target="5">0</div>
+                    <div class="text-xs sm:text-sm text-gray-500 mt-1 sm:mt-2">تقنية مستخدمة</div>
+                </div>
+                <div class="text-center reveal reveal-delay-3">
+                    <div class="counter-value text-2xl sm:text-3xl md:text-4xl font-black font-inter" data-target="100">0</div>
+                    <div class="text-xs sm:text-sm text-gray-500 mt-1 sm:mt-2">% شغف بالتعلّم</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════ ABOUT ══════════ -->
+    <section id="about" class="py-16 sm:py-24 relative">
+        <div class="absolute top-0 left-0 w-48 sm:w-72 h-48 sm:h-72 bg-neon-purple/5 rounded-full blur-[80px] sm:blur-[120px]"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="text-center mb-10 sm:mb-16">
+                <span class="text-[10px] sm:text-xs font-bold tracking-[0.2em] sm:tracking-[0.3em] uppercase text-neon-cyan/60 reveal">من أنا</span>
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-white mt-2 sm:mt-3 reveal reveal-delay-1">
+                    تعرّف عليّ <span class="glow-cyan text-neon-cyan">أكثر</span>
+                </h2>
+            </div>
+            <div class="grid lg:grid-cols-2 gap-10 sm:gap-16 items-center">
+                <div class="reveal reveal-delay-1 flex justify-center">
+                    <div class="relative w-full max-w-sm sm:max-w-md">
+                        <div class="neon-border rounded-xl sm:rounded-2xl">
+                            <img src="WhatsApp Image 2026-04-29 at 8.51.16 PM.jpeg" alt="محمد علي خلف" class="w-full h-64 sm:h-80 md:h-[420px] object-cover rounded-xl sm:rounded-2xl">
+                        </div>
+                        <div class="about-badge-1 bg-navy-800 border border-neon-cyan/20 rounded-xl sm:rounded-2xl p-3 sm:p-4 box-glow-cyan float">
+                            <div class="flex items-center gap-2 sm:gap-3">
+                                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-neon-cyan/20 to-neon-purple/20 flex items-center justify-center shrink-0">
+                                    <i class="fas fa-code text-neon-cyan text-sm sm:text-lg"></i>
+                                </div>
+                                <div>
+                                    <div class="text-white font-bold text-[11px] sm:text-sm">مطور فرونت اند</div>
+                                    <div class="text-neon-cyan text-[9px] sm:text-xs">React & Next.js</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="about-badge-2 bg-navy-800 border border-neon-purple/20 rounded-xl sm:rounded-2xl p-3 sm:p-4 box-glow-purple float-delay">
+                            <div class="flex items-center gap-2 sm:gap-3">
+                                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-neon-purple/20 to-neon-pink/20 flex items-center justify-center shrink-0">
+                                    <i class="fas fa-brain text-neon-purple text-sm sm:text-lg"></i>
+                                </div>
+                                <div>
+                                    <div class="text-white font-bold text-[11px] sm:text-sm">مهندس ذكاء اصطناعي</div>
+                                    <div class="text-neon-purple text-[9px] sm:text-xs">Python & ML</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center lg:text-right">
+                    <h3 class="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6 reveal">
+                        مطور يدمج بين <span class="text-neon-cyan">الإبداع</span> و<span class="text-neon-purple">الذكاء</span>
+                    </h3>
+                    <p class="text-sm sm:text-base text-gray-400 leading-relaxed mb-4 sm:mb-6 reveal reveal-delay-1">
+                        أنا محمد علي خلف، مطور واجهات أمامية متخصص في بناء تطبيقات ويب حديثة وسريعة. شغفي لا يتوقف عند الفرونت اند — أنا أيضاً أتعلم وأعمل في مجال الذكاء الاصطناعي، وأسعى لدمج التقنيتين معاً.
+                    </p>
+                    <p class="text-sm sm:text-base text-gray-400 leading-relaxed mb-6 sm:mb-8 reveal reveal-delay-2">
+                        أؤمن بأن التصميم الجيد والكود النظيف وجهان لعملة واحدة. أستخدم أحدث التقنيات مثل React و TypeScript، وفي الذكاء الاصطناعي أعمل مع Python و TensorFlow.
+                    </p>
+                    <div class="grid grid-cols-2 gap-3 sm:gap-4 reveal reveal-delay-3">
+                        <div class="p-3 sm:p-4 rounded-xl bg-white/[0.02] border border-white/5 text-center sm:text-right">
+                            <i class="fas fa-map-marker-alt text-neon-pink mb-1 sm:mb-2 text-sm sm:text-base"></i>
+                            <div class="text-[10px] sm:text-xs text-gray-500">الموقع</div>
+                            <div class="text-xs sm:text-sm text-white font-medium">مصر</div>
+                        </div>
+                        <div class="p-3 sm:p-4 rounded-xl bg-white/[0.02] border border-white/5 text-center sm:text-right">
+                            <i class="fas fa-graduation-cap text-neon-cyan mb-1 sm:mb-2 text-sm sm:text-base"></i>
+                            <div class="text-[10px] sm:text-xs text-gray-500">التعليم</div>
+                            <div class="text-xs sm:text-sm text-white font-medium">مدرسة we بورسعيد</div>
+                        </div>
+                        <div class="p-3 sm:p-4 rounded-xl bg-white/[0.02] border border-white/5 text-center sm:text-right">
+                            <i class="fas fa-language text-neon-green mb-1 sm:mb-2 text-sm sm:text-base"></i>
+                            <div class="text-[10px] sm:text-xs text-gray-500">اللغات</div>
+                            <div class="text-xs sm:text-sm text-white font-medium">العربية، الإنجليزية</div>
+                        </div>
+                        <div class="p-3 sm:p-4 rounded-xl bg-white/[0.02] border border-white/5 text-center sm:text-right">
+                            <i class="fas fa-heart text-neon-purple mb-1 sm:mb-2 text-sm sm:text-base"></i>
+                            <div class="text-[10px] sm:text-xs text-gray-500">الشغف</div>
+                            <div class="text-xs sm:text-sm text-white font-medium">الويب + AI</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════ SKILLS ══════════ -->
+    <section id="skills" class="py-16 sm:py-24 relative">
+        <div class="absolute bottom-0 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-neon-cyan/5 rounded-full blur-[100px] sm:blur-[150px]"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="text-center mb-10 sm:mb-16">
+                <span class="text-[10px] sm:text-xs font-bold tracking-[0.2em] sm:tracking-[0.3em] uppercase text-neon-purple/60 reveal">ما أتقنه</span>
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-white mt-2 sm:mt-3 reveal reveal-delay-1">
+                    المهارات <span class="glow-purple text-neon-purple">والتقنيات</span>
+                </h2>
+            </div>
+            <div class="tabs-container flex justify-start sm:justify-center gap-2 sm:gap-4 mb-8 sm:mb-12 px-2 reveal reveal-delay-1">
+                <button onclick="switchTab('frontend')" id="tab-frontend" class="tab-btn shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/30">
+                    <i class="fas fa-code ml-1 sm:ml-2"></i>فرونت اند
+                </button>
+                <button onclick="switchTab('ai')" id="tab-ai" class="tab-btn shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 bg-white/[0.02] text-gray-400 border border-white/5">
+                    <i class="fas fa-brain ml-1 sm:ml-2"></i>ذكاء اصطناعي
+                </button>
+                <button onclick="switchTab('tools')" id="tab-tools" class="tab-btn shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 bg-white/[0.02] text-gray-400 border border-white/5">
+                    <i class="fas fa-tools ml-1 sm:ml-2"></i>أدوات
+                </button>
+            </div>
+
+            <div id="panel-frontend" class="skills-panel">
+                <div class="grid sm:grid-cols-2 gap-4 sm:gap-6 max-w-4xl mx-auto">
+                    <div class="space-y-4 sm:space-y-6">
+                        <div class="skill-item reveal"><div class="flex justify-between mb-1.5 sm:mb-2"><span class="text-xs sm:text-sm font-medium text-white">React / Next.js</span><span class="text-[10px] sm:text-xs text-neon-cyan font-code">92%</span></div><div class="h-1.5 sm:h-2 rounded-full bg-white/5"><div class="skill-bar-fill" style="--target-width: 92%"></div></div></div>
+                        <div class="skill-item reveal reveal-delay-1"><div class="flex justify-between mb-1.5 sm:mb-2"><span class="text-xs sm:text-sm font-medium text-white">TypeScript</span><span class="text-[10px] sm:text-xs text-neon-cyan font-code">88%</span></div><div class="h-1.5 sm:h-2 rounded-full bg-white/5"><div class="skill-bar-fill" style="--target-width: 88%"></div></div></div>
+                        <div class="skill-item reveal reveal-delay-2"><div class="flex justify-between mb-1.5 sm:mb-2"><span class="text-xs sm:text-sm font-medium text-white">HTML / CSS / Tailwind</span><span class="text-[10px] sm:text-xs text-neon-cyan font-code">95%</span></div><div class="h-1.5 sm:h-2 rounded-full bg-white/5"><div class="skill-bar-fill" style="--target-width: 95%"></div></div></div>
+                    </div>
+                    <div class="space-y-4 sm:space-y-6">
+                        <div class="skill-item reveal reveal-delay-1"><div class="flex justify-between mb-1.5 sm:mb-2"><span class="text-xs sm:text-sm font-medium text-white">JavaScript (ES6+)</span><span class="text-[10px] sm:text-xs text-neon-cyan font-code">90%</span></div><div class="h-1.5 sm:h-2 rounded-full bg-white/5"><div class="skill-bar-fill" style="--target-width: 90%"></div></div></div>
+                        <div class="skill-item reveal reveal-delay-2"><div class="flex justify-between mb-1.5 sm:mb-2"><span class="text-xs sm:text-sm font-medium text-white">Animations / GSAP</span><span class="text-[10px] sm:text-xs text-neon-cyan font-code">85%</span></div><div class="h-1.5 sm:h-2 rounded-full bg-white/5"><div class="skill-bar-fill" style="--target-width: 85%"></div></div></div>
+                        <div class="skill-item reveal reveal-delay-3"><div class="flex justify-between mb-1.5 sm:mb-2"><span class="text-xs sm:text-sm font-medium text-white">Responsive Design</span><span class="text-[10px] sm:text-xs text-neon-cyan font-code">93%</span></div><div class="h-1.5 sm:h-2 rounded-full bg-white/5"><div class="skill-bar-fill" style="--target-width: 93%"></div></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="panel-ai" class="skills-panel hidden">
+                <div class="grid sm:grid-cols-2 gap-4 sm:gap-6 max-w-4xl mx-auto">
+                    <div class="space-y-4 sm:space-y-6">
+                        <div class="skill-item reveal"><div class="flex justify-between mb-1.5 sm:mb-2"><span class="text-xs sm:text-sm font-medium text-white">Python</span><span class="text-[10px] sm:text-xs text-neon-purple font-code">80%</span></div><div class="h-1.5 sm:h-2 rounded-full bg-white/5"><div class="skill-bar-fill" style="--target-width: 80%; background: linear-gradient(90deg, #7b2fff, #ff00aa);"></div></div></div>
+                        <div class="skill-item reveal reveal-delay-1"><div class="flex justify-between mb-1.5 sm:mb-2"><span class="text-xs sm:text-sm font-medium text-white">TensorFlow / Keras</span><span class="text-[10px] sm:text-xs text-neon-purple font-code">65%</span></div><div class="h-1.5 sm:h-2 rounded-full bg-white/5"><div class="skill-bar-fill" style="--target-width: 65%; background: linear-gradient(90deg, #7b2fff, #ff00aa);"></div></div></div>
+                        <div class="skill-item reveal reveal-delay-2"><div class="flex justify-between mb-1.5 sm:mb-2"><span class="text-xs sm:text-sm font-medium text-white">NumPy / Pandas</span><span class="text-[10px] sm:text-xs text-neon-purple font-code">75%</span></div><div class="h-1.5 sm:h-2 rounded-full bg-white/5"><div class="skill-bar-fill" style="--target-width: 75%; background: linear-gradient(90deg, #7b2fff, #ff00aa);"></div></div></div>
+                    </div>
+                    <div class="space-y-4 sm:space-y-6">
+                        <div class="skill-item reveal reveal-delay-1"><div class="flex justify-between mb-1.5 sm:mb-2"><span class="text-xs sm:text-sm font-medium text-white">Machine Learning</span><span class="text-[10px] sm:text-xs text-neon-purple font-code">60%</span></div><div class="h-1.5 sm:h-2 rounded-full bg-white/5"><div class="skill-bar-fill" style="--target-width: 60%; background: linear-gradient(90deg, #7b2fff, #ff00aa);"></div></div></div>
+                        <div class="skill-item reveal reveal-delay-2"><div class="flex justify-between mb-1.5 sm:mb-2"><span class="text-xs sm:text-sm font-medium text-white">OpenCV</span><span class="text-[10px] sm:text-xs text-neon-purple font-code">55%</span></div><div class="h-1.5 sm:h-2 rounded-full bg-white/5"><div class="skill-bar-fill" style="--target-width: 55%; background: linear-gradient(90deg, #7b2fff, #ff00aa);"></div></div></div>
+                        <div class="skill-item reveal reveal-delay-3"><div class="flex justify-between mb-1.5 sm:mb-2"><span class="text-xs sm:text-sm font-medium text-white">NLP Basics</span><span class="text-[10px] sm:text-xs text-neon-purple font-code">50%</span></div><div class="h-1.5 sm:h-2 rounded-full bg-white/5"><div class="skill-bar-fill" style="--target-width: 50%; background: linear-gradient(90deg, #7b2fff, #ff00aa);"></div></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="panel-tools" class="skills-panel hidden">
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto">
+                    <div class="card-hover p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-white/[0.02] text-center reveal"><i class="fab fa-git-alt text-2xl sm:text-3xl text-neon-orange mb-2 sm:mb-3"></i><div class="text-xs sm:text-sm text-white font-medium">Git</div></div>
+                    <div class="card-hover p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-white/[0.02] text-center reveal reveal-delay-1"><i class="fab fa-docker text-2xl sm:text-3xl text-neon-blue mb-2 sm:mb-3"></i><div class="text-xs sm:text-sm text-white font-medium">Docker</div></div>
+                    <div class="card-hover p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-white/[0.02] text-center reveal reveal-delay-2"><i class="fab fa-figma text-2xl sm:text-3xl text-neon-pink mb-2 sm:mb-3"></i><div class="text-xs sm:text-sm text-white font-medium">Figma</div></div>
+                    <div class="card-hover p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-white/[0.02] text-center reveal reveal-delay-3">
+                        <svg class="vscode-icon mx-auto mb-2 sm:mb-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.583 2.414l-6.583 6.27-4.174-3.54-1.326.762 3.67 3.834-3.67 3.834 1.326.762 4.174-3.54 6.583 6.27 3.417-1.764V4.178L17.583 2.414zM17.583 16.45L12.417 12l5.166-4.45v8.9z" fill="#00f0ff"/></svg>
+                        <div class="text-xs sm:text-sm text-white font-medium">VS Code</div>
+                    </div>
+                    <div class="card-hover p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-white/[0.02] text-center reveal reveal-delay-1"><i class="fab fa-github text-2xl sm:text-3xl text-white mb-2 sm:mb-3"></i><div class="text-xs sm:text-sm text-white font-medium">GitHub</div></div>
+                    <div class="card-hover p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-white/[0.02] text-center reveal reveal-delay-2"><i class="fab fa-npm text-2xl sm:text-3xl text-neon-red mb-2 sm:mb-3"></i><div class="text-xs sm:text-sm text-white font-medium">npm</div></div>
+                    <div class="card-hover p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-white/[0.02] text-center reveal reveal-delay-3"><i class="fas fa-database text-2xl sm:text-3xl text-neon-green mb-2 sm:mb-3"></i><div class="text-xs sm:text-sm text-white font-medium">Firebase</div></div>
+                    <div class="card-hover p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-white/[0.02] text-center reveal reveal-delay-4"><i class="fab fa-linux text-2xl sm:text-3xl text-neon-yellow mb-2 sm:mb-3"></i><div class="text-xs sm:text-sm text-white font-medium">Linux</div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════ PROJECTS ══════════ -->
+    <section id="projects" class="py-16 sm:py-24 relative">
+        <div class="absolute top-1/2 left-0 w-56 sm:w-80 h-56 sm:h-80 bg-neon-pink/5 rounded-full blur-[80px] sm:blur-[120px]"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="text-center mb-10 sm:mb-16">
+                <span class="text-[10px] sm:text-xs font-bold tracking-[0.2em] sm:tracking-[0.3em] uppercase text-neon-pink/60 reveal">أعمالي</span>
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-white mt-2 sm:mt-3 reveal reveal-delay-1">
+                    مشاريع <span class="glow-pink text-neon-pink">مختارة</span>
+                </h2>
+            </div>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
+                <div class="card-hover rounded-xl sm:rounded-2xl bg-white/[0.02] overflow-hidden group reveal">
+                    <div class="h-40 sm:h-48 md:h-52 overflow-hidden relative">
+                        <img src="Screenshot 2026-04-29 213227.png" alt="متجر إلكتروني" class="project-img w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-navy-900 via-transparent to-transparent"></div>
+                        <div class="absolute top-3 right-3 flex gap-1.5">
+                            <span class="px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[10px] font-bold bg-neon-cyan/20 text-neon-cyan border border-neon-cyan/20">React</span>
+                            <span class="px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[10px] font-bold bg-neon-purple/20 text-neon-purple border border-neon-purple/20">Next.js</span>
+                        </div>
+                    </div>
+                    <div class="p-4 sm:p-6">
+                        <h3 class="text-sm sm:text-base lg:text-lg font-bold text-white mb-1.5 sm:mb-2 group-hover:text-neon-cyan transition-colors">متجر إلكتروني متكامل</h3>
+                        <p class="text-xs sm:text-sm text-gray-400 leading-relaxed mb-3 sm:mb-4 line-clamp-2">منصة تجارة إلكترونية بتصميم عصري مع سلة مشتريات ذكية ونظام دفع متكامل.</p>
+                        <div class="flex items-center gap-3 sm:gap-4">
+                            <a href="#" class="text-[10px] sm:text-xs text-neon-cyan flex items-center gap-1 hover:underline"><i class="fab fa-github"></i> الكود</a>
+                            <a href="#" class="text-[10px] sm:text-xs text-neon-purple flex items-center gap-1 hover:underline"><i class="fas fa-external-link-alt"></i> معاينة</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-hover rounded-xl sm:rounded-2xl bg-white/[0.02] overflow-hidden group reveal reveal-delay-1">
+                    <div class="h-40 sm:h-48 md:h-52 overflow-hidden relative">
+                        <img src="Screenshot 2026-04-29 212543.png" alt="لوحة تحكم ذكية" class="project-img w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-navy-900 via-transparent to-transparent"></div>
+                        <div class="absolute top-3 right-3 flex gap-1.5">
+                            <span class="px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[10px] font-bold bg-neon-green/20 text-neon-green border border-neon-green/20">Python</span>
+                            <span class="px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[10px] font-bold bg-neon-cyan/20 text-neon-cyan border border-neon-cyan/20">React</span>
+                        </div>
+                    </div>
+                    <div class="p-4 sm:p-6">
+                        <h3 class="text-sm sm:text-base lg:text-lg font-bold text-white mb-1.5 sm:mb-2 group-hover:text-neon-cyan transition-colors">Landing Page</h3>
+                        <p class="text-xs sm:text-sm text-gray-400 leading-relaxed mb-3 sm:mb-4 line-clamp-2">صفحة تسجيل دخول بتصميم نيون وواجهة مستخدم تفاعلية.</p>
+                        <div class="flex items-center gap-3 sm:gap-4">
+                            <a href="#" class="text-[10px] sm:text-xs text-neon-cyan flex items-center gap-1 hover:underline"><i class="fab fa-github"></i> الكود</a>
+                            <a href="#" class="text-[10px] sm:text-xs text-neon-purple flex items-center gap-1 hover:underline"><i class="fas fa-external-link-alt"></i> معاينة</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-hover rounded-xl sm:rounded-2xl bg-white/[0.02] overflow-hidden group reveal reveal-delay-2">
+                    <div class="h-40 sm:h-48 md:h-52 overflow-hidden relative">
+                        <img src="weather.png" alt="تطبيق طقس" class="project-img w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-navy-900 via-transparent to-transparent"></div>
+                        <div class="absolute top-3 right-3 flex gap-1.5">
+                            <span class="px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[10px] font-bold bg-neon-pink/20 text-neon-pink border border-neon-pink/20">TypeScript</span>
+                            <span class="px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[10px] font-bold bg-neon-yellow/20 text-neon-yellow border border-neon-yellow/20">API</span>
+                        </div>
+                    </div>
+                    <div class="p-4 sm:p-6">
+                        <h3 class="text-sm sm:text-base lg:text-lg font-bold text-white mb-1.5 sm:mb-2 group-hover:text-neon-cyan transition-colors">تطبيق طقس تفاعلي</h3>
+                        <p class="text-xs sm:text-sm text-gray-400 leading-relaxed mb-3 sm:mb-4 line-clamp-2">تطبيق طقس بتصميم نيون مع عرض تفاعلي للحالة الجوية وتنبؤات الأيام القادمة.</p>
+                        <div class="flex items-center gap-3 sm:gap-4">
+                            <a href="#" class="text-[10px] sm:text-xs text-neon-cyan flex items-center gap-1 hover:underline"><i class="fab fa-github"></i> الكود</a>
+                            <a href="#" class="text-[10px] sm:text-xs text-neon-purple flex items-center gap-1 hover:underline"><i class="fas fa-external-link-alt"></i> معاينة</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-hover rounded-xl sm:rounded-2xl bg-white/[0.02] overflow-hidden group reveal">
+                    <div class="h-40 sm:h-48 md:h-52 overflow-hidden relative">
+                        <img src="Screenshot 2026-04-29 212319.png" alt="منصة صوت صامت" class="project-img w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-navy-900 via-transparent to-transparent"></div>
+                        <div class="absolute top-3 right-3 flex gap-1.5">
+                            <span class="px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[10px] font-bold bg-neon-green/20 text-neon-green border border-neon-green/20">Python</span>
+                            <span class="px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[10px] font-bold bg-neon-purple/20 text-neon-purple border border-neon-purple/20">NLP</span>
+                        </div>
+                    </div>
+                    <div class="p-4 sm:p-6">
+                        <h3 class="text-sm sm:text-base lg:text-lg font-bold text-white mb-1.5 sm:mb-2 group-hover:text-neon-cyan transition-colors">منصة صوت صامت</h3>
+                        <p class="text-xs sm:text-sm text-gray-400 leading-relaxed mb-3 sm:mb-4 line-clamp-2">منصة للطلاب في مدارس we لتسهيل التواصل بين الطلبة وبين الادارة.</p>
+                        <div class="flex items-center gap-3 sm:gap-4">
+                            <a href="#" class="text-[10px] sm:text-xs text-neon-cyan flex items-center gap-1 hover:underline"><i class="fab fa-github"></i> الكود</a>
+                            <a href="#" class="text-[10px] sm:text-xs text-neon-purple flex items-center gap-1 hover:underline"><i class="fas fa-external-link-alt"></i> معاينة</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-hover rounded-xl sm:rounded-2xl bg-white/[0.02] overflow-hidden group reveal reveal-delay-1">
+                    <div class="h-40 sm:h-48 md:h-52 overflow-hidden relative">
+                        <img src="Screenshot 2026-04-29 212140.png" alt="بورتفوليو" class="project-img w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-navy-900 via-transparent to-transparent"></div>
+                        <div class="absolute top-3 right-3 flex gap-1.5">
+                            <span class="px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[10px] font-bold bg-neon-cyan/20 text-neon-cyan border border-neon-cyan/20">HTML</span>
+                            <span class="px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[10px] font-bold bg-neon-pink/20 text-neon-pink border border-neon-pink/20">Tailwind</span>
+                        </div>
+                    </div>
+                    <div class="p-4 sm:p-6">
+                        <h3 class="text-sm sm:text-base lg:text-lg font-bold text-white mb-1.5 sm:mb-2 group-hover:text-neon-cyan transition-colors">موقع بورتفوليو شخصي</h3>
+                        <p class="text-xs sm:text-sm text-gray-400 leading-relaxed mb-3 sm:mb-4 line-clamp-2">موقع بورتفوليو بتصميم نيون فاخر مع انيميشنات وتأثيرات بصرية مذهلة.</p>
+                        <div class="flex items-center gap-3 sm:gap-4">
+                            <a href="#" class="text-[10px] sm:text-xs text-neon-cyan flex items-center gap-1 hover:underline"><i class="fab fa-github"></i> الكود</a>
+                            <a href="#" class="text-[10px] sm:text-xs text-neon-purple flex items-center gap-1 hover:underline"><i class="fas fa-external-link-alt"></i> معاينة</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-hover rounded-xl sm:rounded-2xl bg-white/[0.02] overflow-hidden group reveal reveal-delay-2">
+                    <div class="h-40 sm:h-48 md:h-52 overflow-hidden relative">
+                        <img src="AI.jpeg" alt="تصنيف صور" class="project-img w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-navy-900 via-transparent to-transparent"></div>
+                        <div class="absolute top-3 right-3 flex gap-1.5">
+                            <span class="px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[10px] font-bold bg-neon-purple/20 text-neon-purple border border-neon-purple/20">AI</span>
+                            <span class="px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[10px] font-bold bg-neon-cyan/20 text-neon-cyan border border-neon-cyan/20">OD</span>
+                        </div>
+                    </div>
+                    <div class="p-4 sm:p-6">
+                        <h3 class="text-sm sm:text-base lg:text-lg font-bold text-white mb-1.5 sm:mb-2 group-hover:text-neon-cyan transition-colors">نظام بسيط بالذكاء الاصطناعي</h3>
+                        <p class="text-xs sm:text-sm text-gray-400 leading-relaxed mb-3 sm:mb-4 line-clamp-2">نموذج تعلم عميق يصنّف الصور بدقة عالية باستخدام الذكاء الاصطناعي .</p>
+                        <div class="flex items-center gap-3 sm:gap-4">
+                            <a href="#" class="text-[10px] sm:text-xs text-neon-cyan flex items-center gap-1 hover:underline"><i class="fab fa-github"></i> الكود</a>
+                            <a href="#" class="text-[10px] sm:text-xs text-neon-purple flex items-center gap-1 hover:underline"><i class="fas fa-external-link-alt"></i> معاينة</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════ CONTACT ══════════ -->
+    <section id="contact" class="py-16 sm:py-24 relative">
+        <div class="absolute top-0 left-1/3 w-64 sm:w-96 h-64 sm:h-96 bg-neon-cyan/5 rounded-full blur-[100px] sm:blur-[150px]"></div>
+        <div class="absolute bottom-0 right-1/4 w-56 sm:w-80 h-56 sm:h-80 bg-neon-purple/5 rounded-full blur-[80px] sm:blur-[120px]"></div>
+        <div class="max-w-4xl mx-auto px-4 sm:px-6">
+            <div class="text-center mb-10 sm:mb-16">
+                <span class="text-[10px] sm:text-xs font-bold tracking-[0.2em] sm:tracking-[0.3em] uppercase text-neon-green/60 reveal">تواصل معي</span>
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-white mt-2 sm:mt-3 reveal reveal-delay-1">
+                    لنبنِ شيئاً <span class="text-neon-green" style="text-shadow: 0 0 10px #00ff8888, 0 0 40px #00ff8844;">معاً</span>
+                </h2>
+                <p class="text-sm sm:text-base text-gray-400 mt-3 sm:mt-4 max-w-md mx-auto reveal reveal-delay-2">هل لديك مشروع مميز أو فكرة تحتاج مطور؟ أنا جاهز للعمل معك!</p>
+            </div>
+            <div class="grid md:grid-cols-5 gap-6 sm:gap-8">
+                <div class="md:col-span-2 space-y-4 sm:space-y-6 reveal">
+                    <a href="mailto:mohammedalikhalaf4@gmail.com" class="card-hover block p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-white/[0.02] group">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-neon-cyan/10 flex items-center justify-center mb-3 sm:mb-4 group-hover:shadow-[0_0_20px_#00f0ff33] transition-shadow">
+                            <i class="fas fa-envelope text-neon-cyan text-sm sm:text-lg"></i>
+                        </div>
+                        <div class="text-[10px] sm:text-xs text-gray-500 mb-1">البريد الإلكتروني</div>
+                        <div class="text-[11px] sm:text-sm text-white font-medium break-all leading-relaxed">mohammedalikhalaf4@gmail.com</div>
+                    </a>
+                    <div class="card-hover block p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-white/[0.02]">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-neon-purple/10 flex items-center justify-center mb-3 sm:mb-4">
+                            <i class="fas fa-clock text-neon-purple text-sm sm:text-lg"></i>
+                        </div>
+                        <div class="text-[10px] sm:text-xs text-gray-500 mb-1">وقت الرد</div>
+                        <div class="text-xs sm:text-sm text-white font-medium">خلال 24 ساعة</div>
+                    </div>
+                    <div class="card-hover block p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-white/[0.02]">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-neon-pink/10 flex items-center justify-center mb-3 sm:mb-4">
+                            <i class="fas fa-handshake text-neon-pink text-sm sm:text-lg"></i>
+                        </div>
+                        <div class="text-[10px] sm:text-xs text-gray-500 mb-1">حالة العمل</div>
+                        <div class="text-xs sm:text-sm text-white font-medium flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-neon-green animate-pulse"></span>
+                            متاح للفريلانس
+                        </div>
+                    </div>
+                </div>
+                <div class="md:col-span-3 reveal reveal-delay-2">
+                    <form id="contactForm" class="card-hover rounded-xl sm:rounded-2xl bg-white/[0.02] p-5 sm:p-8 space-y-4 sm:space-y-6">
+                        <div class="grid sm:grid-cols-2 gap-4 sm:gap-6">
+                            <div>
+                                <label class="block text-[10px] sm:text-xs text-gray-500 mb-1.5 sm:mb-2 font-medium">الاسم</label>
+                                <input type="text" required placeholder="اسمك الكامل" class="w-full bg-white/[0.03] border border-white/10 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-white placeholder-gray-600 focus:outline-none focus:border-neon-cyan/50 focus:shadow-[0_0_15px_#00f0ff11] transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] sm:text-xs text-gray-500 mb-1.5 sm:mb-2 font-medium">البريد</label>
+                                <input type="email" required placeholder="email@example.com" dir="ltr" class="w-full bg-white/[0.03] border border-white/10 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-white placeholder-gray-600 focus:outline-none focus:border-neon-cyan/50 focus:shadow-[0_0_15px_#00f0ff11] transition-all text-left">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] sm:text-xs text-gray-500 mb-1.5 sm:mb-2 font-medium">الموضوع</label>
+                            <input type="text" required placeholder="موضوع الرسالة" class="w-full bg-white/[0.03] border border-white/10 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-white placeholder-gray-600 focus:outline-none focus:border-neon-cyan/50 focus:shadow-[0_0_15px_#00f0ff11] transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] sm:text-xs text-gray-500 mb-1.5 sm:mb-2 font-medium">الرسالة</label>
+                            <textarea required rows="4 sm:rows-5" placeholder="اكتب رسالتك هنا..." class="w-full bg-white/[0.03] border border-white/10 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-white placeholder-gray-600 focus:outline-none focus:border-neon-cyan/50 focus:shadow-[0_0_15px_#00f0ff11] transition-all resize-none"></textarea>
+                        </div>
+                        <button type="submit" class="magnetic-btn w-full py-3 sm:py-4 rounded-lg sm:rounded-xl bg-gradient-to-l from-neon-cyan to-neon-blue text-navy-900 font-bold text-xs sm:text-sm flex items-center justify-center gap-2">
+                            <i class="fas fa-paper-plane"></i>
+                            <span>إرسال الرسالة</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════ FOOTER ══════════ -->
+    <footer class="py-10 sm:py-16 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="flex flex-col items-center gap-6 sm:gap-8">
+                <!-- Social Icons -->
+                <div class="flex items-center gap-6 sm:gap-8">
+                    <a href="mailto:mohammedalikhalaf4@gmail.com" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-gray-500 hover:text-neon-cyan hover:border-neon-cyan/30 hover:shadow-[0_0_20px_#00f0ff22] transition-all duration-300 text-lg sm:text-xl">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                    <a href="https://github.com/mohamedalikhalaf632-a11y" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-gray-500 hover:text-neon-purple hover:border-neon-purple/30 hover:shadow-[0_0_20px_#7b2fff22] transition-all duration-300 text-lg sm:text-xl">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/mohamed-khalaf-026581385" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-gray-500 hover:text-neon-pink hover:border-neon-pink/30 hover:shadow-[0_0_20px_#ff00aa22] transition-all duration-300 text-lg sm:text-xl">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="#" class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-gray-500 hover:text-neon-green hover:border-neon-green/30 hover:shadow-[0_0_20px_#00ff8822] transition-all duration-300 text-lg sm:text-xl">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                </div>
+                <!-- Divider -->
+                <div class="w-16 h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent"></div>
+                <!-- Copyright -->
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center text-navy-900 font-bold text-xs sm:text-sm">KH</div>
+                    <span class="text-[10px] sm:text-sm text-gray-500">© 2026 محمد علي خلف. جميع الحقوق محفوظة.</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle ml-2"></i>
+        <span id="toastMsg">تم الإرسال بنجاح!</span>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const isMobile = window.innerWidth < 768;
+        const particleCount = isMobile ? 35 : 80;
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
+                this.size = Math.random() * (isMobile ? 1.5 : 2) + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.25; this.speedY = (Math.random() - 0.5) * 0.25;
+                this.opacity = Math.random() * 0.4 + 0.1;
+                this.color = ['#00f0ff','#7b2fff','#ff00aa','#00ff88'][Math.floor(Math.random()*4)];
+            }
+            update() { this.x += this.speedX; this.y += this.speedY; if(this.x<0||this.x>canvas.width||this.y<0||this.y>canvas.height) this.reset(); }
+            draw() { ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fillStyle=this.color; ctx.globalAlpha=this.opacity; ctx.fill(); ctx.globalAlpha=1; }
+        }
+        for(let i=0;i<particleCount;i++) particles.push(new Particle());
+        const connectDist = isMobile ? 80 : 120;
+        function connectParticles() {
+            for(let i=0;i<particles.length;i++) { for(let j=i+1;j<particles.length;j++) {
+                const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y, dist=Math.sqrt(dx*dx+dy*dy);
+                if(dist<connectDist) { ctx.beginPath(); ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y); ctx.strokeStyle=particles[i].color; ctx.globalAlpha=0.04*(1-dist/connectDist); ctx.lineWidth=0.5; ctx.stroke(); ctx.globalAlpha=1; }
+            }}
+        }
+        function animateParticles() { ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.update();p.draw();}); connectParticles(); requestAnimationFrame(animateParticles); }
+        animateParticles();
+
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if(window.scrollY>50) { navbar.style.background='rgba(10,10,46,0.92)'; navbar.style.backdropFilter='blur(20px)'; navbar.style.borderBottom='1px solid rgba(0,240,255,0.08)'; }
+            else { navbar.style.background='transparent'; navbar.style.backdropFilter='none'; navbar.style.borderBottom='none'; }
+        });
+
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(sec => { if(window.scrollY >= sec.offsetTop-120) current=sec.getAttribute('id'); });
+            navLinks.forEach(link => { link.classList.remove('active'); if(link.getAttribute('href')==='#'+current) link.classList.add('active'); });
+        });
+
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        let menuOpen = false;
+        menuToggle.addEventListener('click', () => {
+            menuOpen = !menuOpen; mobileMenu.classList.toggle('open'); document.body.style.overflow = menuOpen ? 'hidden' : '';
+            const b = menuToggle.children;
+            if(menuOpen) { b[0].style.transform='rotate(45deg) translate(4px,4px)'; b[1].style.opacity='0'; b[2].style.transform='rotate(-45deg) translate(4px,-4px)'; b[2].style.width='24px'; }
+            else { b[0].style.transform=''; b[1].style.opacity='1'; b[2].style.transform=''; b[2].style.width='16px'; }
+        });
+        function closeMobile() { menuOpen=false; mobileMenu.classList.remove('open'); document.body.style.overflow=''; const b=menuToggle.children; b[0].style.transform=''; b[1].style.opacity='1'; b[2].style.transform=''; b[2].style.width='16px'; }
+
+        const revealObserver = new IntersectionObserver((entries) => { entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); e.target.querySelectorAll('.skill-bar-fill').forEach(b=>b.classList.add('animated')); } }); }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        const skillObserver = new IntersectionObserver((entries) => { entries.forEach(e => { if(e.isIntersecting) e.target.querySelectorAll('.skill-bar-fill').forEach(b=>b.classList.add('animated')); }); }, { threshold: 0.2 });
+        document.querySelectorAll('.skills-panel').forEach(p => skillObserver.observe(p));
+
+        function switchTab(tab) {
+            document.querySelectorAll('.skills-panel').forEach(p=>p.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(b => { b.className='tab-btn shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 bg-white/[0.02] text-gray-400 border border-white/5'; });
+            document.getElementById('panel-'+tab).classList.remove('hidden');
+            const c={frontend:'cyan',ai:'purple',tools:'pink'}[tab];
+            document.getElementById('tab-'+tab).className=`tab-btn shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 bg-neon-${c}/10 text-neon-${c} border border-neon-${c}/30`;
+            const panel=document.getElementById('panel-'+tab);
+            panel.querySelectorAll('.skill-bar-fill').forEach(b=>{b.classList.remove('animated');setTimeout(()=>b.classList.add('animated'),50);});
+            panel.querySelectorAll('.reveal').forEach(el=>{el.classList.remove('visible');setTimeout(()=>el.classList.add('visible'),50);});
+        }
+
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if(e.isIntersecting) { const t=parseInt(e.target.getAttribute('data-target')); let c=0; const inc=t/60; const timer=setInterval(()=>{c+=inc;if(c>=t){e.target.textContent=t+'+';clearInterval(timer);}else{e.target.textContent=Math.floor(c)+'+';}},30); counterObserver.unobserve(e.target); } });
+        }, { threshold: 0.5 });
+        document.querySelectorAll('.counter-value').forEach(c => counterObserver.observe(c));
+
+        document.getElementById('contactForm').addEventListener('submit', (e) => {
+            e.preventDefault(); const i=e.target.querySelectorAll('input,textarea');
+            const link=`mailto:mohammedalikhalaf4@gmail.com?subject=${encodeURIComponent(i[2].value)}&body=${encodeURIComponent('الاسم: '+i[0].value+'\nالبريد: '+i[1].value+'\n\n'+i[3].value)}`;
+            window.location.href=link; showToast('جاري فتح البريد الإلكتروني...'); e.target.reset();
+        });
+
+        function showToast(msg) { const t=document.getElementById('toast'); document.getElementById('toastMsg').textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3500); }
+
+        document.querySelectorAll('a[href^="#"]').forEach(a => { a.addEventListener('click', function(e) { e.preventDefault(); const t=document.querySelector(this.getAttribute('href')); if(t) t.scrollIntoView({behavior:'smooth',block:'start'}); }); });
+
+        if(!('ontouchstart' in window)) {
+            let throttle=0;
+            document.addEventListener('mousemove',(e)=>{ const now=Date.now(); if(now-throttle<40)return; throttle=now; const d=document.createElement('div'); d.style.cssText=`position:fixed;left:${e.clientX}px;top:${e.clientY}px;width:4px;height:4px;border-radius:50%;background:#00f0ff;pointer-events:none;z-index:9998;transition:all .5s ease;opacity:.5;`; document.body.appendChild(d); requestAnimationFrame(()=>{d.style.opacity='0';d.style.transform='scale(0)';}); setTimeout(()=>d.remove(),500); });
+        }
+    </script>
+</body>
+</html>
